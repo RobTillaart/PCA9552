@@ -62,6 +62,7 @@ public:
 
   //  GPIO
   uint16_t getInput();
+  void     pinMode(uint8_t led, uint8_t mode);
   void     digitalWrite(uint8_t led, uint8_t val);
   uint8_t  digitalRead(uint8_t led);
 
