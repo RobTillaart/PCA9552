@@ -49,12 +49,17 @@ unittest_teardown()
 unittest(test_constants)
 {
   fprintf(stderr, "\nregisters");
-  assertEqual(PCA9552_INPUT      , 0x00);
-  assertEqual(PCA9552_PSC0       , 0x01);
-  assertEqual(PCA9552_PWM0       , 0x02);
-  assertEqual(PCA9552_PSC1       , 0x03);
-  assertEqual(PCA9552_PWM1       , 0x04);
-  assertEqual(PCA9552_LS0        , 0x05);
+  assertEqual(PCA9552_INPUT0     , 0x00);
+  assertEqual(PCA9552_INPUT1     , 0x01);
+  assertEqual(PCA9552_PSC0       , 0x02);
+  assertEqual(PCA9552_PWM0       , 0x03);
+  assertEqual(PCA9552_PSC1       , 0x04);
+  assertEqual(PCA9552_PWM1       , 0x05);
+  assertEqual(PCA9552_LS0        , 0x06);
+  assertEqual(PCA9552_LS1        , 0x07);
+  assertEqual(PCA9552_LS2        , 0x08);
+  assertEqual(PCA9552_LS3        , 0x09);
+
 
   fprintf(stderr, "\nerrorcodes");
   assertEqual(PCA9552_OK         , 0x00);
@@ -72,6 +77,7 @@ unittest(test_constructor)
   PCA9552 pca(0x62);
 
   assertEqual(16, pca.channelCount());
+  assertEqual(0x62, pca.getAddress());
 }
 
 //  need mock up for more tests.
