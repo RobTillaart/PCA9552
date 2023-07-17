@@ -70,9 +70,12 @@ uint8_t PCA9552::channelCount()
 //
 //  GPIO
 //
-uint8_t PCA9552::getInput()
+uint16_t PCA9552::getInput()
 {
-  return readReg(PCA9552_INPUT);
+  uint16_t reg = readReg(PCA9552_INPUT1);
+  reg <<= 8;
+  reg += readReg(PCA9552_INPUT0);
+  return reg;
 }
 
 
@@ -85,7 +88,13 @@ void PCA9552::digitalWrite(uint8_t led, uint8_t val)
 
 uint8_t PCA9552::digitalRead(uint8_t led)
 {
-  uint8_t val = readReg(PCA9552_INPUT);
+  uint8_t reg = PCA9552_INPUT0;
+  if (led > 7)
+  {
+    reg += 1;
+    led -= 8;
+  }
+  uint8_t val = readReg(reg);
   if ((val >> led) & 0x01) return HIGH;
   return LOW;
 }
@@ -136,11 +145,17 @@ bool PCA9552::setLEDSource(uint8_t led, uint8_t source)
   if (led >= _channelCount) return false;
   if (source > 3) return false;
 
-  uint8_t ledSelect = readReg(PCA9552_LS0);
+  uint8_t reg = PCA9552_LS0;
+  while (led > 3)
+  {
+    reg += 1;
+    led -= 4;
+  }
+  uint8_t ledSelect = readReg(reg);
   ledSelect &= ~(0x03 << (led * 2));
   ledSelect |= (source << (led * 2));
 
-  writeReg(PCA9552_LS0, ledSelect);
+  writeReg(reg, ledSelect);
   return true;
 }
 
@@ -149,7 +164,13 @@ uint8_t PCA9552::getLEDSource(uint8_t led)
 {
   if (led >= _channelCount) return PCA9552_ERROR;
 
-  uint8_t ledSelect = readReg(PCA9552_LS0);
+  uint8_t reg = PCA9552_LS0;
+  while (led > 3)
+  {
+    reg += 1;
+    led -= 4;
+  }
+  uint8_t ledSelect = readReg(reg);
   uint8_t source = (ledSelect >> (led * 2)) & 0x03;
   return source;
 }

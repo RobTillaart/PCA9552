@@ -16,12 +16,16 @@
 
 
 //  REGISTERS
-#define PCA9552_INPUT       0x00
-#define PCA9552_PSC0        0x01
-#define PCA9552_PWM0        0x02
-#define PCA9552_PSC1        0x03
-#define PCA9552_PWM1        0x04
-#define PCA9552_LS0         0x05
+#define PCA9552_INPUT0      0x00
+#define PCA9552_INPUT1      0x01
+#define PCA9552_PSC0        0x02
+#define PCA9552_PWM0        0x03
+#define PCA9552_PSC1        0x04
+#define PCA9552_PWM1        0x05
+#define PCA9552_LS0         0x06
+#define PCA9552_LS1         0x07
+#define PCA9552_LS2         0x08
+#define PCA9552_LS3         0x09
 
 
 //  LED SOURCE MASKS
@@ -56,8 +60,8 @@ public:
   uint8_t  getAddress();
   uint8_t  channelCount();
 
-  //  input register, only lower 4 bits
-  uint8_t  getInput();
+  //  GPIO
+  uint16_t getInput();
   void     digitalWrite(uint8_t led, uint8_t val);
   uint8_t  digitalRead(uint8_t led);
 

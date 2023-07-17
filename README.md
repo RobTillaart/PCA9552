@@ -15,8 +15,7 @@ Arduino library for PCA9552 I2C 8 bit PWM LED driver, 16 channel.
 
 This experimental library is to control the I2C PCA9552 PWM extender.
 
-TODO CHECK 
-
+It is derived from the PCA9553 library and kept in sync if possible.
 
 This device has two possible hardcoded I2C addresses 0x62 and 0x63, 
 see table below.
@@ -79,16 +78,17 @@ Returns true if device address is available on I2C bus.
 idem, ESP32 ESP8266 only.
 - **bool isConnected()** checks if address is available on I2C bus.
 - **uint8_t getAddress()** returns I2C address.
-- **uint8_t channelCount()** returns the number of channels = 4.
+- **uint8_t channelCount()** returns the number of channels = 16.
 
 
-#### Input
+#### GPIO
 
-- **getInput()** read current output levels.
-Only the lower 4 bits are used.
+- **uint16_t getInput()** read all current output levels.
+- **void digitalWrite(uint8_t led, uint8_t val)** set LED  pin HIGH or LOW.
+- **uint8_t digitalRead(uint8_t led)** read current state of LED pin.
 
 
-#### Prescalers Frequency
+#### Prescaler Frequency
 
 Get and set the pre-scaler of the PWM generator.
 
@@ -144,10 +144,10 @@ Note: one might need a Gamma brightness correction - https://github.com/RobTilla
 
 - **bool setLEDSource(uint8_t led, uint8_t source)** set the source 
 of the selected led.
-  - led == 0..3, source == 0..3, see table below
+  - led == 0..15, source == 0..3, see table below
   - returns false if parameter is out of range.
 - **uint8_t getLEDSource(uint8_t led)** returns current setting.
-  - led == 0..3
+  - led == 0..15
   - return source, see table below.
   - returns 0xFF if led parameter out of range. 
 
@@ -181,29 +181,12 @@ To be elaborated in the source code.
 #### Must
 
 - improve documentation
-- test test test
+- keep in sync with PCA9553
 
 #### Should
 
-- **reset()**  power on reset...
-- GPIO modi pins
-  - **pinMode()**
-  - **digitalWrite()**
-  - **digitalRead()**
-- improve error handling
-  - return values, where etc.
-- defines for sources
-- add examples
-  - gauss curve?
-  
-
 #### Could
 
-#### Wont (on request)
-
-- no usage of autoincrement register
-- percent interface for PWM
-- time interface for prescaler
-- default setup in begin (what how)
+#### Wont
 
 
