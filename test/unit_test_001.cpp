@@ -76,7 +76,7 @@ unittest(test_constructor)
 {
   PCA9552 pca(0x62);
 
-  assertEqual(16, pca.channelCount());
+  assertEqual(16, pca.outputCount());
   assertEqual(0x62, pca.getAddress());
 }
 

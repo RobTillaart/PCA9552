@@ -1,9 +1,12 @@
 //
-//    FILE: PCA9552_test01.ino
+//    FILE: PCA9552_PWM.ino
 //  AUTHOR: Rob Tillaart
-//    DATE: 2023-07-16
+//    DATE: 2023-07-18
 // PURPOSE: test PCA9552 library
 //     URL: https://github.com/RobTillaart/PCA9552
+//
+//  Connect LEDs from pin 0 and pin 1 with a resistor to 5V
+//  See datasheet
 
 
 #include "Arduino.h"
@@ -24,24 +27,16 @@ void setup()
   if (leds.begin() == false)
   {
     Serial.println("Could not connect.");
-    while(1);
+    while (1);
   }
 
-  //  default
-  leds.setPrescaler(0, 255);
-  leds.setPWM(0, 128);
+  leds.setOutputMode(0, PCA9552_MODE_PWM0);
+  leds.setOutputMode(1, PCA9552_MODE_PWM1);
 
-  //  different
-  leds.setPrescaler(1, 113);
-  leds.setPWM(1, 32);
-
-  //  all output pins in a different mode
-  leds.setOutputMode(0, PCA9552_MODE_LOW);
-  leds.setOutputMode(1, PCA9552_MODE_HIGH);
-  leds.setOutputMode(2, PCA9552_MODE_PWM0);
-  leds.setOutputMode(3, PCA9552_MODE_PWM1);
-
-  Serial.println("done...");
+  leds.setPrescaler(0, 43);  //  1 Hz
+  leds.setPWM(0, 128);       //  50% duty cycle
+  leds.setPrescaler(1, 21);  //  2 Hz
+  leds.setPWM(1, 32);        //  12% duty cycle
 }
 
 

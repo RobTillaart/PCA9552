@@ -10,9 +10,13 @@ begin	KEYWORD2
 
 isConnected	KEYWORD2
 getAddress	KEYWORD2
-channelCount	KEYWORD2
+outputCount	KEYWORD2
+reset	KEYWORD2
 
 getInput	KEYWORD2
+pinMode	KEYWORD2
+digitalWrite	KEYWORD2
+digitalRead	KEYWORD2
 
 setPrescaler	KEYWORD2
 getPrescaler	KEYWORD2
@@ -20,8 +24,8 @@ getPrescaler	KEYWORD2
 setPWM	KEYWORD2
 getPWM	KEYWORD2
 
-setLEDSource	KEYWORD2
-getLEDSource	KEYWORD2
+setOutputMode	KEYWORD2
+getOutputMode	KEYWORD2
 
 
 #

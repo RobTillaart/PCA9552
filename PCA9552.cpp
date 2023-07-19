@@ -18,7 +18,8 @@ PCA9552::PCA9552(const uint8_t deviceAddress, TwoWire *wire)
 {
   _address = deviceAddress;
   _wire    = wire;
-  _channelCount = 16;
+  _outputCount = 16;
+  _error = PCA9552_OK;
 }
 
 
@@ -54,15 +55,30 @@ bool PCA9552::isConnected()
 }
 
 
+uint8_t PCA9552::reset()
+{
+  //  not most efficient
+  setPrescaler(0, 0);   //  44 Hz
+  setPrescaler(1, 0);   //  44 Hz
+  setPWM(0, 128);       //  50%
+  setPWM(1, 128);       //  50%
+  for (int pin = 0; pin < _outputCount; pin++)
+  {
+    setOutputMode(pin, 0);  //  LOW
+  }
+  return PCA9552_OK;
+}
+
+
 uint8_t PCA9552::getAddress()
 {
   return _address;
 }
 
 
-uint8_t PCA9552::channelCount()
+uint8_t PCA9552::outputCount()
 {
-  return _channelCount;
+  return _outputCount;
 }
 
 
@@ -79,29 +95,29 @@ uint16_t PCA9552::getInput()
 }
 
 
-void PCA9552::pinMode(uint8_t led, uint8_t mode)
+void PCA9552::pinMode(uint8_t pin, uint8_t mode)
 {
-  if (mode != OUTPUT) setLEDSource(led, 1);
+  if (mode != OUTPUT) setOutputMode(pin, PCA9552_MODE_HIGH);
 }
 
 
-void PCA9552::digitalWrite(uint8_t led, uint8_t val)
+void PCA9552::digitalWrite(uint8_t pin, uint8_t val)
 {
-  if (val == LOW) setLEDSource(led, 0);
-  else            setLEDSource(led, 1);
+  if (val == LOW) setOutputMode(pin, PCA9552_MODE_LOW);
+  else            setOutputMode(pin, PCA9552_MODE_HIGH);
 }
 
 
-uint8_t PCA9552::digitalRead(uint8_t led)
+uint8_t PCA9552::digitalRead(uint8_t pin)
 {
   uint8_t reg = PCA9552_INPUT0;
-  if (led > 7)
+  if (pin > 7)
   {
     reg += 1;
-    led -= 8;
+    pin -= 8;
   }
-  uint8_t val = readReg(reg);
-  if ((val >> led) & 0x01) return HIGH;
+  uint8_t value = readReg(reg);
+  if ((value >> pin) & 0x01) return HIGH;
   return LOW;
 }
 
@@ -144,42 +160,62 @@ uint8_t PCA9552::getPWM(uint8_t gen)
 
 /////////////////////////////////////////////////////
 //
-//  LED SOURCE SELECTOR
+//  OUTPUT MODE - MUX SELECTION
 //
-bool PCA9552::setLEDSource(uint8_t led, uint8_t source)
+uint8_t PCA9552::setOutputMode(uint8_t pin, uint8_t mode)
 {
-  if (led >= _channelCount) return false;
-  if (source > 3) return false;
+  if (pin >= _outputCount)
+  {
+    _error = PCA9552_ERR_CHAN;
+    return _error;
+  }
+  if (mode > 3)
+  {
+    _error = PCA9552_ERR_MODE;
+    return _error;
+  }
 
   uint8_t reg = PCA9552_LS0;
-  while (led > 3)
+  while (pin > 3)
   {
     reg += 1;
-    led -= 4;
+    pin -= 4;
   }
   uint8_t ledSelect = readReg(reg);
-  ledSelect &= ~(0x03 << (led * 2));
-  ledSelect |= (source << (led * 2));
+  ledSelect &= ~(0x03 << (pin * 2));
+  ledSelect |= (mode << (pin * 2));
 
-  writeReg(reg, ledSelect);
-  return true;
+  return writeReg(reg, ledSelect);
 }
 
 
-uint8_t PCA9552::getLEDSource(uint8_t led)
+uint8_t PCA9552::getOutputMode(uint8_t pin)
 {
-  if (led >= _channelCount) return PCA9552_ERROR;
+  if (pin >= _outputCount)
+  {
+    _error = PCA9552_ERR_CHAN;
+    return _error;
+  }
 
   uint8_t reg = PCA9552_LS0;
-  while (led > 3)
+  while (pin > 3)
   {
     reg += 1;
-    led -= 4;
+    pin -= 4;
   }
   uint8_t ledSelect = readReg(reg);
-  uint8_t source = (ledSelect >> (led * 2)) & 0x03;
-  return source;
+  uint8_t mode = (ledSelect >> (pin * 2)) & 0x03;
+  return mode;
 }
+
+
+uint8_t PCA9552::getLastError()
+{
+  uint8_t e = _error;
+  _error = PCA9552_OK;
+  return e;
+}
+
 
 
 /////////////////////////////////////////////////////
@@ -204,7 +240,12 @@ uint8_t PCA9552::readReg(uint8_t reg)
   _wire->beginTransmission(_address);
   _wire->write(reg);
   _error = _wire->endTransmission();
-
+  if (_error == 0) _error = PCA9552_OK;
+  else
+  {
+    _error = PCA9552_ERR_I2C;
+    return 0;
+  }
   if (_wire->requestFrom(_address, (uint8_t)1) != 1)
   {
     _error = PCA9552_ERROR;
