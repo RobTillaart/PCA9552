@@ -60,6 +60,11 @@ unittest(test_constants)
   assertEqual(PCA9552_LS2        , 0x08);
   assertEqual(PCA9552_LS3        , 0x09);
 
+  fprintf(stderr, "\noutput modi");
+  assertEqual(PCA9552_MODE_LOW   , 0x00);
+  assertEqual(PCA9552_MODE_HIGH  , 0x01);
+  assertEqual(PCA9552_MODE_PWM0  , 0x02);
+  assertEqual(PCA9552_MODE_PWM1  , 0x03);
 
   fprintf(stderr, "\nerrorcodes");
   assertEqual(PCA9552_OK         , 0x00);

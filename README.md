@@ -77,9 +77,9 @@ idem, ESP32 ESP8266 only.
 #### GPIO
 
 - **uint16_t getInput()** read all current output levels.
-- **void pinMode(uint8_t led, uint8_t mode)** set LED pin to INPUT or OUTPUT.
-- **void digitalWrite(uint8_t led, uint8_t val)** set LED pin HIGH or LOW.
-- **uint8_t digitalRead(uint8_t led)** read current state of LED pin.
+- **void pinMode(uint8_t pin, uint8_t mode)** set output pin to INPUT or OUTPUT.
+- **void digitalWrite(uint8_t pin, uint8_t value)** set output pin HIGH or LOW.
+- **uint8_t digitalRead(uint8_t pin)** read current state of output pin.
 
 
 #### Prescaler Frequency
@@ -156,6 +156,15 @@ See table below.
 |  PCA9552_MODE_PWM1  |    3    |  blinks at PWM1 rate
 
 
+#### Power On Reset
+
+The PCA9552 will keep its settings as long as it is powered on. 
+This means it can start with an previous configuration when uploading 
+two different sketches short after each other.
+
+To handle this the library has a **reset()** function which sets
+the device in the Power On state.
+
 
 #### Error codes
 
@@ -166,8 +175,8 @@ These are kept similar to PCA9635 et al error codes.
 |  PCA9552_OK             |   0x00  |  Everything went well
 |  PCA9552_ERROR          |   0xFF  |  Generic error
 |  PCA9552_ERR_WRITE      |   0xFE  |
-|  PCA9552_ERR_CHAN       |   0xFD  |
-|  PCA9552_ERR_MODE       |   0xFC  |
+|  PCA9552_ERR_CHAN       |   0xFD  |  output pin out of range / channel error
+|  PCA9552_ERR_MODE       |   0xFC  |  mode parameter out of range.
 |  PCA9552_ERR_REG        |   0xFB  |
 |  PCA9552_ERR_I2C        |   0xFA  |
 
