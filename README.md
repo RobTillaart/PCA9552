@@ -151,7 +151,7 @@ This gives the output a blink range of 0.172 Hz to 44 Hz.
 
 Some "magic" pre-scalers.  (to be confirmed).
 
-|  psc  |  Period  |  Frequency  |
+|  PSC  |  Period  |  Frequency  |
 |:-----:|:--------:|:-----------:|
 |    0  |  0.0227  |  44.00 Hz   |
 |    1  |  0.0455  |  22.00 Hz   |
@@ -178,7 +178,7 @@ gen = 0 or 1
 
 The duty cycle of ```BLINK = (256 - PWM) / 256```
 
-|  pwm  |  Duty Cycle  |
+|  PWM  |  Duty Cycle  |
 |:-----:|:------------:|
 |    0  |     0%       |
 |   64  |    25%       |
