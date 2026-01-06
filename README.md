@@ -16,7 +16,9 @@ Arduino library for PCA9552 I2C 8 bit PWM LED driver, 16 channel.
 
 ## Description
 
-This experimental library is to control the I2C PCA9552 PWM extender.
+**Experimental**
+
+This Arduino library is to control the I2C PCA9552 PWM extender.
 
 It is derived from the PCA9553 library and kept in sync if possible.
 
